@@ -80,7 +80,6 @@ class DFM_Smug {
 	 */
 	function __construct() {
 		$args = DFM_Smug::process_args( func_get_args() );
-		var_dump($args);
 		$this->smug_api_base = 'https://api.smugmug.com';
 		$this->smug_access_base = $this->smug_api_base . '/services/oauth/1.0a';
 		$this->endpoint_base = $this->smug_api_base . '/api/v2/';
@@ -754,10 +753,6 @@ echo 'Base string: '.$base_string;
 		curl_setopt_array($ch, $options);
 		// ^^^ do something with exec fn
 		$response = curl_exec( $ch );
-		echo '<pre>';
-		echo 'Body: ';
-		print_r( $response );
-		echo '</pre>';
 		
 		if ( curl_errno( $ch ) !== 0 ) {
 			throw new DFM_Smug_Exception( sprintf( '%s: CURL Error %d: %s', __CLASS__, curl_errno( $ch ), curl_error( $ch ) ), curl_errno( $ch ) );
@@ -874,17 +869,6 @@ echo 'Base string: '.$base_string;
 			return;
 		}
 		return trim( $safe_var );
-	}
-
-	/*
-	 * Santizes the user input and makes it safe to inject in SQL DB
-	 *
-	 * @param string $variable The user input variable
-	 * @return string $variable to injected into DB
-	 */
-	private function make_safe( $variable ) {
-		$variable = mysql_real_escape_string( trim( $variable ) );
-	    return $variable;
 	}
 }
 ?>
