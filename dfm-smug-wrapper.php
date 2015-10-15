@@ -91,7 +91,6 @@ class DFM_Smug {
 		$this->api_ver = ( isset( $args['api_ver'] ) ) ? $this->dfm_filter_var( $args['api_ver'] ) : '2.0';
 		$this->app_name = ( isset( $args['app_name'] ) ) ? $this->dfm_filter_var( $args['app_name'] ) . ' using DFM SmugMug Wrapper v1.0' : 'DFM SmugMug Wrapper v1.0';
 		$this->content_type = ( isset( $args['content_type'] ) ) ? $this->dfm_filter_var( $args['content_type'] ) : 'application/json';
-		$this->oauth_nonce = md5( time() . mt_rand() );
 		$this->oauth_signature_method = ( isset( $args['sig_method'] ) ) ? $this->dfm_filter_var( $args['sig_method'] ) : 'HMAC-SHA1';
 		$this->oauth_timestamp = time();
 		$this->oauth_version = ( isset( $args['oauth_version'] ) ) ? $this->dfm_filter_var( $args['oauth_version'] ) : '1.0';
@@ -168,21 +167,21 @@ class DFM_Smug {
 			case 'images_get':
 				$album_key = $this->dfm_filter_var( $args['AlbumKey'] );
 				$this->var_exists_check( $album_key, $method ) ? $album_key : false;
-				$method = 'GET';
 				$endpoint = $this->album_base . $album_key;
 				if( $method === 'images_get' ){
 					$endpoint = $endpoint . '!images';
 				}
+				$method = 'GET';
 				break;
 			case 'images_getInfo':
 			case 'images_getURLs':
 				$image_key = $this->dfm_filter_var( $args['ImageKey'] );
 				$this->var_exists_check( $image_key, $method ) ? $image_key : false;
-				$method = 'GET';
 				$endpoint = $this->image_base . $image_key;
 				if( $method === 'images_getURLs' ){
 					$endpoint = $endpoint . '!sizedetails';
 				}
+				$method = 'GET';
 				break;
 			case 'categories_get':
 				$username = $this->dfm_filter_var( $args['Username'] );
@@ -505,7 +504,7 @@ class DFM_Smug {
 		// Set up our oauth parameters so we can send them through to the signature generation function
 		$params = array (
 			'oauth_version'             => $this->oauth_version,
-			'oauth_nonce'               => $this->oauth_nonce,
+			'oauth_nonce'               => md5( time() . mt_rand() ),
 			'oauth_timestamp'           => $this->oauth_timestamp,
 			'oauth_consumer_key'        => $this->oauth_consumer_key,
 			'oauth_signature_method'    => $this->oauth_signature_method
@@ -688,7 +687,6 @@ echo 'Base string: '.$base_string;
 		// If the SmugMug response code starts with 3, SmugMug is redirecting our request. Generate a new request so that we do not get the oauth nonce_used error
 		while( $response_code == 3 ) {
 			$this->url = $this->smug_api_base . $response_location;
-			$this->oauth_nonce = md5( time() . mt_rand() );
 			$http_header = $this->create_wp_http_header( $method, $item_args );			
 			$response = wp_remote_get( $this->url, $http_header );
 			$response_code = $response['response']['code'];
@@ -770,7 +768,6 @@ echo 'Base string: '.$base_string;
 		// If the SmugMug response code starts with 3, SmugMug is redirecting our request. Generate a new request so that we do not get the oauth nonce_used error
 		while( $response_code == 3 ) {
 			$this->url = $this->smug_api_base . $response_location;
-			$this->oauth_nonce = md5(time() . mt_rand());
 			$http_header = $this->create_curl_http_header( $method, $item_args );
 
 			$ch = curl_init();
