@@ -687,7 +687,6 @@ echo 'Base string: '.$base_string;
 		// If the SmugMug response code starts with 3, SmugMug is redirecting our request. Generate a new request so that we do not get the oauth nonce_used error
 		while( $response_code == 3 ) {
 			$this->url = $this->smug_api_base . $response_location;
-//			$this->oauth_nonce = md5( time() . mt_rand() );
 			$http_header = $this->create_wp_http_header( $method, $item_args );			
 			$response = wp_remote_get( $this->url, $http_header );
 			$response_code = $response['response']['code'];
@@ -769,7 +768,6 @@ echo 'Base string: '.$base_string;
 		// If the SmugMug response code starts with 3, SmugMug is redirecting our request. Generate a new request so that we do not get the oauth nonce_used error
 		while( $response_code == 3 ) {
 			$this->url = $this->smug_api_base . $response_location;
-//			$this->oauth_nonce = md5(time() . mt_rand());
 			$http_header = $this->create_curl_http_header( $method, $item_args );
 
 			$ch = curl_init();
