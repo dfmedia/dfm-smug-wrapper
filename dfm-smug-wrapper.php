@@ -446,6 +446,7 @@ class DFM_Smug {
 				'Authorization' => $new_header
 			),
 			'redirection' => 0,
+			'timeout' => 60000, // Set timeout to 1 minute for large requests
 			'body' => $item_args
 		);
 		return $http_header;
@@ -679,7 +680,14 @@ class DFM_Smug {
 	public function dfm_wp_remote_request( $method, $endpoint, $item_args = false ) {
 		$this->url = $endpoint;
 		$http_header = $this->create_wp_http_header( $method, $item_args );
-		$response = wp_remote_get( $this->url, $http_header );	
+		$response = wp_remote_get( $this->url, $http_header );
+
+		if( is_wp_error( $response ) ) {
+			$response_message = $response->get_error_message();	
+			throw new DFM_Smug_Exception( 'There was an error when processing your request: '. $response_message );
+			return;
+		} 
+	
 		$response_code = $response['response']['code'];
 		$response_location = $response['headers']['location'];
 		$response_code = (int) substr( $response_code, 0, 1 );
