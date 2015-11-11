@@ -591,7 +591,7 @@ class DFM_Smug {
 		}
 		// Create our base string with all of the data we need for OAuth
 		$base_string = $method . '&' . $this->url_encode_RFC3986( $endpoint ) . '&' .  $this->url_encode_RFC3986( $string );
-echo 'Base string: '.$base_string;
+
 		// HMAC-SHA1 encode our base string
 		$sig = base64_encode( hash_hmac( 'sha1', $base_string, $enc_key, true ) );
 		return $sig;
